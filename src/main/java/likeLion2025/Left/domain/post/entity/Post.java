@@ -1,7 +1,11 @@
 package likeLion2025.Left.domain.post.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import likeLion2025.Left.domain.category.entity.Category;
+import likeLion2025.Left.domain.category.entity.enums.CategoryName;
 import likeLion2025.Left.domain.post.entity.enums.PostStatus;
 import likeLion2025.Left.domain.post.entity.enums.PostType;
 import likeLion2025.Left.domain.user.entity.User;
@@ -29,16 +33,19 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
+    @NotNull(message = "Title is required.")
+    @Size(min = 3, max = 100, message = "제대로된 제목을 입력해주세요.")
     private String title; //제목
 
-    @Column(nullable = false)
+    @NotNull(message = "Content is required.")
+    @Size(min = 1, message = "상품 설명을 적어주세요.")
     private String content; //글 내용
 
     @Column(nullable = false)
     private String photoUrl; //사진 url
 
-    @Column(nullable = false)
+    @NotNull(message = "Price is required.")
+    @Min(value = 0, message = "최소 금액은 0원 입니다.")
     private int price; //가격
 
     @Enumerated(EnumType.STRING)
@@ -58,12 +65,16 @@ public class Post {
 
     private boolean isLiked; //찜
 
-    @Column(nullable = false)
+    @NotNull(message = "Contact link is required.")
     private String contactLink; //카톡 오픈톡방 링크
 
     private LocalDateTime createdAt; //작성 시간, 2025-06-25T02:32:00 처럼 출력
 
     public String getNickname() {
         return this.user.getNickname(); //user 테이블에서 nickName 참조
+    }
+
+    public String getCategoryName() {
+        return this.category.getCategoryName().getValue(); // CategoryName의 value 값을 가져오기
     }
 }

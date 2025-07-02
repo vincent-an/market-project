@@ -2,6 +2,7 @@ package likeLion2025.Left.domain.user.entity;
 
 import jakarta.persistence.*;
 import likeLion2025.Left.domain.user.entity.enums.Department;
+import likeLion2025.Left.domain.user.entity.enums.Role;
 import lombok.*;
 
 @Entity
@@ -27,4 +28,9 @@ public class User {
 
     @Enumerated(EnumType.STRING) @Column(nullable = false)
     private Department department;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
+
+
