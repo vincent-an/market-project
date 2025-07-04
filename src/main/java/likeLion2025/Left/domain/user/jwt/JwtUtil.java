@@ -14,12 +14,9 @@ import java.util.Date;
 public class JwtUtil {
     //검증 및 토큰 생성 하는 클래스
     private final SecretKey secretKey;
-    private final Long accessExpiration;
 
-    public JwtUtil(@Value("${spring.jwt.secret}")String secret,
-                   @Value("${spring.jwt.access-expiration}") Long accessExpiration) {
+    public JwtUtil(@Value("${spring.jwt.secret}")String secret) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
-        this.accessExpiration = accessExpiration;
     }
     // username 토큰 확인
     public String getEmail(String token) {
@@ -29,21 +26,26 @@ public class JwtUtil {
     }
     // role 토큰 확인
     public String getRole(String token) {
-
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+    }
+
+    public String getCategory(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
     // 토큰의 만료 여부 확인 boolean / 소멸되면 true, 안되면 false
     public Boolean isExpired(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
     // Jwt token 생성
-    public String createJwt(String email, String role) {
+    public String createJwt(String category, String email, String role, Long expiredMs) {
+
         return Jwts.builder()
-                .claim("email", email)
+                .claim("category", category)
+                .claim("email", email) //claim을 이용해 만들 매개변수와 이름 데이터를 넣음
                 .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis())) // 현재 발행 시간
-                .expiration(new Date(System.currentTimeMillis() + accessExpiration)) // 언제 소멸될 것인지
-                .signWith(secretKey)
-                .compact();
+                .issuedAt(new Date(System.currentTimeMillis())) //언제 발행했는지 발행시간 넣음
+                .expiration(new Date(System.currentTimeMillis() + expiredMs)) //언제 소멸될 것인지 넣음
+                .signWith(secretKey) //secreKey를 통해서 암호화를 진행하는 코드
+                .compact(); // compact를 통해 리턴함
     }
 }

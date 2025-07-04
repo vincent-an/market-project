@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @Getter @Setter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class User {
 
     @Id
@@ -31,6 +31,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+
 }
 
 

@@ -1,10 +1,11 @@
-package likeLion2025.Left.domain.user.config;
+package likeLion2025.Left.grobal.config;
 
-import io.jsonwebtoken.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
+import likeLion2025.Left.domain.user.jwt.CustomLogoutFilter;
 import likeLion2025.Left.domain.user.jwt.JwtFilter;
 import likeLion2025.Left.domain.user.jwt.JwtUtil;
 import likeLion2025.Left.domain.user.jwt.LoginFilter;
+import likeLion2025.Left.domain.user.repository.RefreshRepository;
 import likeLion2025.Left.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -30,7 +32,7 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
+    private final RefreshRepository refreshRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -83,13 +85,18 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/eushop/login","/eushop", "/eushop/signup").permitAll()
+                        .requestMatchers("/eushop/login","/eushop", "/eushop/signup", "/eushop/list").permitAll()
 //                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("eushop/reissue").permitAll() //reissue는 전체 접근 가능
                         .anyRequest().authenticated());
         //LoginFilter 추가
         http
                 .addFilterBefore(new JwtFilter(jwtUtil, userRepository), LoginFilter.class)
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+
+        // 로그아웃 필터 추가 (기존 로그아웃 필터 앞에)
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         //세션 설정
         http
