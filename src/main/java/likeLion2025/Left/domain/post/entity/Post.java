@@ -9,6 +9,7 @@ import likeLion2025.Left.domain.post.entity.enums.PostStatus;
 import likeLion2025.Left.domain.post.entity.enums.PostType;
 import likeLion2025.Left.domain.user.entity.User;
 import lombok.*;
+import likeLion2025.Left.domain.post.dto.PostRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -76,4 +77,21 @@ public class Post {
     public String getNickname() {
         return this.user.getNickname(); //user 테이블에서 nickName 참조
     }
+//
+
+    public void updateFrom(PostRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.category = Category.valueOf(request.getCategory().toUpperCase());
+        this.postType = PostType.valueOf(request.getPostType().toUpperCase());
+        this.status = PostStatus.valueOf(request.getPostStatus().toUpperCase());
+        this.price = request.getPrice();
+        this.imgUrls = request.getImgUrls();
+        this.introImgUrl = request.getIntroImgUrl();
+        this.isReturnable = request.isReturnable();
+        this.isDelivery = request.isDelivery();
+        this.isDirectTrade = request.isDirectTrade();
+        this.contactLink = request.getContactLink();
+    }
+//
 }

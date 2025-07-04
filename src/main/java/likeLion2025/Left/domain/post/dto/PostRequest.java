@@ -19,6 +19,9 @@ public class PostRequest {
     private boolean isDirectTrade;
     private String contactLink;
     private String postType;
+    //
+    private String postStatus;
+    //
     private String photoUrl;
 
     private String introImgUrl;// 대표 이미지 URL

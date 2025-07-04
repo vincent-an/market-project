@@ -25,21 +25,14 @@ public class PostController {
     private final PostService postService;
     private final UserRepository userRepository;
 
-    //게시글 작성
+    // 게시글 작성
     @PostMapping("/create")
     public ResponseEntity<PostResponse> createPost(Authentication authentication,
                                                    @RequestBody PostRequest request) {
-//        이미 Authentication authentication를 통해 받아와서 중복 사용 안해도 됨
-//        authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-
-        // 3. DB에서 User 조회 (없으면 예외 발생)
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-
-        // 4. userId 꺼내기
         Long userId = user.getId();
-//        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getId();
 
         log.info("User ID: {}", userId);
         log.info("request to POST postTitle: {}", request.getTitle());
@@ -48,7 +41,51 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    //게시글 목록 조회
+    //
+
+        // 게시글 수정
+        @PutMapping("/posts/{postId}")
+        public ResponseEntity<PostResponse> updatePost(
+                @PathVariable Long postId,
+                @RequestBody PostRequest request,
+                Authentication authentication
+        ) {
+            String email = authentication.getName();
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+            PostResponse response = postService.updatePost(postId, request, user);
+            return ResponseEntity.ok(response);
+        }
+
+        // 카테고리별 필터링 (전공, 교양, 잡화)
+        @GetMapping("/posts/filter/category")
+        public ResponseEntity<List<PostMainIntroResponse>> filterByCategory(
+                @RequestParam String category
+        ) {
+            List<PostMainIntroResponse> result = postService.filterByCategory(category);
+            return ResponseEntity.ok(result);
+        }
+
+        // 상태별 필터링 (SELLING, SOLD, BUYING, BOUGHT)
+        @GetMapping("/posts/filter/status")
+        public ResponseEntity<List<PostMainIntroResponse>> filterByStatus(
+                @RequestParam String status
+        ) {
+            List<PostMainIntroResponse> result = postService.filterByStatus(status);
+            return ResponseEntity.ok(result);
+        }
+
+        // 타입별 필터링 (BUY, SELL)
+        @GetMapping("/posts/filter/type")
+        public ResponseEntity<List<PostMainIntroResponse>> filterByType(
+                @RequestParam String postType
+        ) {
+            List<PostMainIntroResponse> result = postService.filterByType(postType);
+            return ResponseEntity.ok(result);
+        }
+//
+
+    // 게시글 목록 조회
     @GetMapping("/list")
     public ResponseEntity<List<PostMainIntroResponse>> listPosts(Model model) {
         List<PostMainIntroResponse> posts = postService.selectPosts();
