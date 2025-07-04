@@ -2,31 +2,38 @@ package likeLion2025.Left.domain.user.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import likeLion2025.Left.domain.user.dto.CustomUserDetails;
 import likeLion2025.Left.domain.user.dto.LoginRequest;
-import likeLion2025.Left.domain.user.dto.UserResponse;
-import likeLion2025.Left.domain.user.entity.User;
-import likeLion2025.Left.domain.user.entity.enums.Department;
+import likeLion2025.Left.domain.user.entity.RefreshEntity;
+import likeLion2025.Left.domain.user.repository.RefreshRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
 
 @Slf4j
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
+                       RefreshRepository refreshRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.refreshRepository = refreshRepository;
         setFilterProcessesUrl("/eushop/login"); // 로그인 경로를 "/eushop/login"으로 변경
     }
 
@@ -57,18 +64,25 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user =customUserDetails.user();
-        String email =user.getEmail();
-        String role = user.getRole().getValue();
+        //유저 정보
+        String email = authentication.getName();
 
-        String token = jwtUtil.createJwt(email, role);
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+        String role = auth.getAuthority();
 
-        response.addHeader("Authorization", "Bearer " + token);
-        response.setContentType("application/json; charset=UTF-8");
-        UserResponse responseMessage = UserResponse.from(user, "로그인 성공!");
-        new ObjectMapper().writeValue(response.getWriter(), responseMessage);
-        log.info("login success email: {}", email);
+        //토큰 생성
+        String access = jwtUtil.createJwt("access", email, role, 600000L);
+        String refresh = jwtUtil.createJwt("refresh", email, role, 86400000L);
+
+        //Refresh 토큰 저장
+        addRefreshEntity(email, refresh, 86400000L);
+
+        //응답 설정
+        response.setHeader("access", access);
+        response.addCookie(createCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
     }
 
     //로그인 실패시 실행하는 메소드
@@ -76,5 +90,30 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         response.setStatus(401);
         log.info("login failed");
+    }
+
+    // refresh token을 repository에 넣어주는 메서드
+    private void addRefreshEntity(String Email, String refresh, Long expiredMs) {
+
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        RefreshEntity refreshEntity = new RefreshEntity();
+        refreshEntity.setEmail(Email);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshRepository.save(refreshEntity);
+    }
+
+    // refresh token을 쿠키로 보낼 시 사용
+    private Cookie createCookie(String key, String value) { // key 값, jwt가 받을 value값
+
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60); // 위 refresh 토큰 생성과 동일한 값
+        //cookie.setSecure(true); //https 통신을 할 경우 활성화시켜주면 됨
+        //cookie.setPath("/"); // 쿠키가 적용될 범위도 설정 가능
+        cookie.setHttpOnly(true); //클라이언트에서 js로 쿠키에 접근하는 걸 막아줘야함
+
+        return cookie;
     }
 }

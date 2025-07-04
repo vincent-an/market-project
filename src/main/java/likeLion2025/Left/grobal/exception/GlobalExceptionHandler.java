@@ -1,4 +1,4 @@
-package likeLion2025.Left.domain.Exception;
+package likeLion2025.Left.grobal.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

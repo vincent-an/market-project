@@ -4,14 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import likeLion2025.Left.domain.category.entity.Category;
-import likeLion2025.Left.domain.category.entity.enums.CategoryName;
+import likeLion2025.Left.domain.post.entity.enums.Category;
 import likeLion2025.Left.domain.post.entity.enums.PostStatus;
 import likeLion2025.Left.domain.post.entity.enums.PostType;
 import likeLion2025.Left.domain.user.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -25,8 +25,7 @@ public class Post {
     @Column(name = "post_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @ManyToOne
@@ -41,8 +40,12 @@ public class Post {
     @Size(min = 1, message = "상품 설명을 적어주세요.")
     private String content; //글 내용
 
-    @Column(nullable = false)
-    private String photoUrl; //사진 url
+    private String introImgUrl; // 대표 이미지
+
+    @ElementCollection
+    @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "image_url")
+    private List<String> imgUrls; // 전체 이미지 리스트
 
     @NotNull(message = "Price is required.")
     @Min(value = 0, message = "최소 금액은 0원 입니다.")
@@ -72,9 +75,5 @@ public class Post {
 
     public String getNickname() {
         return this.user.getNickname(); //user 테이블에서 nickName 참조
-    }
-
-    public String getCategoryName() {
-        return this.category.getCategoryName().getValue(); // CategoryName의 value 값을 가져오기
     }
 }

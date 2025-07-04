@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
-
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
@@ -35,8 +34,10 @@ public class UserService {
                 .password(bCryptPasswordEncoder.encode(signupRequest.getPassword()))
                 .nickname(signupRequest.getNickname())
                 .department(signupRequest.getDepartment())
-                .role(Role.USER)
+                .role(Role.fromValue("ROLE_USER"))
+//                .role(Role.valueOf("ROLE_USER")) 에러로 변경
                 .build();
+
         userRepository.save(newUser);
 
         return UserResponse.from(newUser, "회원가입 성공!");
