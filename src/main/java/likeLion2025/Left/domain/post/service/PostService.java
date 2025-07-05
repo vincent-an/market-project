@@ -135,23 +135,31 @@ public class PostService {
                     .collect(Collectors.toList());
         }
 
-        /**
-         * 글 종류 필터링_BUY 또는 SELL
-         * @param postType 문자열로 받은 글 종류 값
-         * @return 필터링된 게시물 리스트 (썸네일 + 제목 + 가격 + 카테고리)
-         */
-        public List<PostMainIntroResponse> filterByType(String postType) {
-            PostType typeEnum = PostType.valueOf(postType.toUpperCase());
-            List<Post> posts = postRepository.findByPostType(typeEnum);
-            return posts.stream()
-                    .map(p -> new PostMainIntroResponse(
-                            p.getIntroImgUrl(),
-                            p.getTitle(),
-                            p.getPrice(),
-                            p.getCategory().getValue()
-                    ))
-                    .collect(Collectors.toList());
-        }
+    /**
+     * 글 종류 필터링_BUY 또는 SELL
+     * - BUY는 BUYING 상태만
+     * - SELL은 SELLING 상태만 필터링
+     */
+    public List<PostMainIntroResponse> filterByType(String postType) {
+        PostType typeEnum = PostType.valueOf(postType.toUpperCase());
+
+        PostStatus defaultStatus = switch (typeEnum) {
+            case BUY -> PostStatus.BUYING;
+            case SELL -> PostStatus.SELLING;
+        };
+
+        List<Post> posts = postRepository.findByPostTypeAndStatus(typeEnum, defaultStatus);
+
+        return posts.stream()
+                .map(p -> new PostMainIntroResponse(
+                        p.getIntroImgUrl(),
+                        p.getTitle(),
+                        p.getPrice(),
+                        p.getCategory().getValue()
+                ))
+                .collect(Collectors.toList());
+    }
+
 
 //
 

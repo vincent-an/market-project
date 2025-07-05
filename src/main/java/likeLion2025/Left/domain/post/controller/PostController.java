@@ -74,15 +74,18 @@ public class PostController {
             List<PostMainIntroResponse> result = postService.filterByStatus(status);
             return ResponseEntity.ok(result);
         }
+        //put, 앤드포인트 수정
 
-        // 타입별 필터링 (BUY, SELL)
-        @GetMapping("/posts/filter/type")
-        public ResponseEntity<List<PostMainIntroResponse>> filterByType(
-                @RequestParam String postType
-        ) {
-            List<PostMainIntroResponse> result = postService.filterByType(postType);
-            return ResponseEntity.ok(result);
-        }
+    // 타입별 필터링 (BUY -> BUYING, SELL -> SELLING 자동 적용됨)
+    @GetMapping("/posts/filter/type")
+    public ResponseEntity<List<PostMainIntroResponse>> filterByType(
+            @RequestParam String postType
+    ) {
+        // 컨트롤러에서 postType을 대문자로 변환한 뒤 서비스에 넘김
+        List<PostMainIntroResponse> result = postService.filterByTypeWithDefaultStatus(postType.toUpperCase());
+        return ResponseEntity.ok(result);
+    }
+
 //
 
     // 게시글 목록 조회

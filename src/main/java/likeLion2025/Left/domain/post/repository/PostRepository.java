@@ -15,5 +15,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<PostMainIntroProjection> findAllBy();
     List<Post> findByCategory(Category category);
     List<Post> findByStatus(PostStatus status);
-    List<Post> findByPostType(PostType postType);
+    List<Post> findByPostTypeAndStatus(PostType type, PostStatus status);
+
 }
