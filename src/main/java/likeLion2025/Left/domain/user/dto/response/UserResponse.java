@@ -1,4 +1,4 @@
-package likeLion2025.Left.domain.user.dto;
+package likeLion2025.Left.domain.user.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

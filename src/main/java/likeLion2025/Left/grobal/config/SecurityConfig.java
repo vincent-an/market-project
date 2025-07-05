@@ -85,7 +85,8 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/eushop/login","/eushop", "/eushop/signup", "/eushop/list").permitAll()
+                        .requestMatchers("/eushop/login", "/eushop/signup", "/eushop/list"
+                        ,"eushop/list/type/**", "/eushop/content/**", "/eushop/list/category/**").permitAll()
 //                        .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("eushop/reissue").permitAll() //reissue는 전체 접근 가능
                         .anyRequest().authenticated());

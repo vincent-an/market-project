@@ -30,34 +30,6 @@ public class ImageController {
     private final ImageService imageService;
     private final PostRepository postRepository;
 
-    // 1. 이미지 업로드
-//    @PostMapping("/upload")
-//    public ResponseEntity<String> uploadImage(Authentication authentication,@RequestParam("file") MultipartFile file) throws IOException {
-//        // 인증된 사용자 정보 가져오기
-//        authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email  = authentication.getName();
-//
-//        try {
-//            String s3Url = imageService.imageUpload(file);
-//            return ResponseEntity.ok("{\"imageUrl\": \"" + s3Url + "\"}");
-//        } catch (IOException e) {
-//            return ResponseEntity.status(500).body("{\"error\": \"파일 업로드 실패\"}");
-//        }
-//    }
-
-    // 2. 이미지 삭제
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteImage(Authentication authentication, @RequestParam String imageUrl) {
-        authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-
-        try {
-            imageService.deleteImage(imageUrl);
-            return ResponseEntity.ok("{\"message\": \"이미지 삭제 성공\"}");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("{\"error\": \"이미지 삭제 실패\"}");
-        }
-    }
 
     @PostMapping("/upload")
     public Map<String, Object> uploadImages(Authentication authentication,MultipartRequest request) throws IOException {
@@ -83,5 +55,22 @@ public class ImageController {
         response.put("introImgUrl", introImgUrl); // 대표 이미지 URL 포함
         return response;
     }
+
+    // 이미지 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteImage(Authentication authentication, @RequestParam String imageUrl) {
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        try {
+            imageService.deleteImage(imageUrl);
+            return ResponseEntity.ok("{\"message\": \"이미지 삭제 성공\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("{\"error\": \"이미지 삭제 실패\"}");
+        }
+    }
+
+    // 이미지 수정
+
 
 }

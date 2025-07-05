@@ -1,4 +1,4 @@
-package likeLion2025.Left.domain.user.dto;
+package likeLion2025.Left.domain.user.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
