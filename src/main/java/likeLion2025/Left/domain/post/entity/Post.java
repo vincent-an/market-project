@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import likeLion2025.Left.domain.post.dto.request.PostUpdateRequest;
 import likeLion2025.Left.domain.post.entity.enums.Category;
 import likeLion2025.Left.domain.post.entity.enums.PostStatus;
 import likeLion2025.Left.domain.post.entity.enums.PostType;
@@ -76,4 +77,16 @@ public class Post {
     public String getNickname() {
         return this.user.getNickname(); //user 테이블에서 nickName 참조
     }
+
+//    public void update(PostUpdateRequest request) {
+//        this.title = request.getTitle();
+//        this.content = request.getContent();
+//        this.price = request.getPrice();
+//        this.category = Category.valueOf(request.getCategory());
+//        this.postType = PostType.valueOf(request.getPostType());
+//        this.isReturnable = request.isReturnable();
+//        this.isDelivery = request.isDelivery();
+//        this.isDirectTrade = request.isDirectTrade();
+//        this.contactLink = request.getContactLink();
+//    }
 }

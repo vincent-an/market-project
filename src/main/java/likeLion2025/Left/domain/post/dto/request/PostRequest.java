@@ -1,4 +1,4 @@
-package likeLion2025.Left.domain.post.dto;
+package likeLion2025.Left.domain.post.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +19,7 @@ public class PostRequest {
     private boolean isDirectTrade;
     private String contactLink;
     private String postType;
-    private String photoUrl;
-
+    private String postStatus;
     private String introImgUrl;// 대표 이미지 URL
     private List<String> imgUrls;// 전체 이미지 URL 리스트
 

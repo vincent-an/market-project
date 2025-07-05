@@ -5,7 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import likeLion2025.Left.domain.user.dto.LoginRequest;
+import likeLion2025.Left.domain.user.dto.request.LoginRequest;
 import likeLion2025.Left.domain.user.entity.RefreshEntity;
 import likeLion2025.Left.domain.user.repository.RefreshRepository;
 import lombok.extern.slf4j.Slf4j;

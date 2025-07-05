@@ -33,8 +33,10 @@ public class JwtFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         return Objects.equals("/eushop/login", path) ||
                 Objects.equals("/eushop/signup", path) ||
-                Objects.equals("/eushop", path) ||
-                Objects.equals("/eushop/list", path);
+                Objects.equals("/eushop/list", path) ||
+                Objects.equals("/eushop/list/type/**", path) ||
+                Objects.equals("/eushop/content/**", path) ||
+                Objects.equals("/eushop/list/category/**", path);
     }
 
     @Override

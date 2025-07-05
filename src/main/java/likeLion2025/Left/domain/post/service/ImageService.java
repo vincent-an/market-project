@@ -3,23 +3,35 @@ package likeLion2025.Left.domain.post.service;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import jakarta.transaction.Transactional;
+import likeLion2025.Left.domain.post.entity.Post;
+import likeLion2025.Left.domain.post.repository.PostRepository;
+import likeLion2025.Left.domain.user.entity.User;
+import likeLion2025.Left.domain.user.repository.UserRepository;
 import likeLion2025.Left.grobal.config.S3Config;
+import likeLion2025.Left.grobal.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ImageService {
     private final S3Config s3Config;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -27,7 +39,7 @@ public class ImageService {
     private String localLocation = "C:\\testimage\\";
 //            "/tmp/uploads/"; //추후 ubuntu 이미지 파일 경로로 변경해야됨
 
-    //MultipartRequest request
+    // 이미지 추가
     public String imageUpload(MultipartFile file) throws IOException {
         // 프론트에서 이미지를 file이라는 이름으로 보냈을 때 그 갑을 받음
 //        MultipartFile file = request.getFile("upload");
@@ -55,11 +67,53 @@ public class ImageService {
         return s3Url;
     }
 
-    // 이미지 삭제
-    public void deleteImage(String imageUrl) {
-        // URL에서 파일명만 추출하여 삭제
-        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    // 다중 이미지 삭제
+    public void deleteImages(List<String> imageUrls) {
+        for (String imageUrl : imageUrls) {
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            s3Config.amazonS3Client().deleteObject(new DeleteObjectRequest(bucket, fileName));
+        }
+    }
 
+    // 단일 이미지 삭제
+    public void deleteImage(String imageUrl) {
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         s3Config.amazonS3Client().deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
+
+    // 이미지 수정 (잘 안됨.. ㅠ)
+//    public String replaceImage(String oldImageUrl, MultipartFile newImage) throws IOException {
+//        // 기존 이미지 삭제
+//        deleteImage(oldImageUrl);
+//
+//        // 새 이미지 업로드 (기존 메서드 재사용)
+//        return imageUpload(newImage);
+//    }
+    // 이미지 수정
+//    @Transactional
+//    public void updatePostImage(Long postId, String oldImageUrl, MultipartFile newImage, String userEmail) throws IOException {
+//        // 게시글 검증
+//        Post post = postRepository.findById(postId)
+//                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+//        // 작성자 검증
+//        if (!post.getUser().getEmail().equals(userEmail)) {
+//            throw new IllegalArgumentException("수정 권한이 없습니다.");
+//        }
+//
+//        // 이미지 교체
+//        String newImageUrl = replaceImage(oldImageUrl, newImage);
+//
+//        // 이미지 리스트에서 교체
+//        List<String> updatedUrls = post.getImgUrls().stream()
+//                .map(url -> url.equals(oldImageUrl) ? newImageUrl : url)
+//                .collect(Collectors.toList());
+//
+//        post.setImgUrls(updatedUrls);
+//
+//        // 대표 이미지도 교체된 이미지가 첫 번째라면 업데이트
+//        if (post.getIntroImgUrl().equals(oldImageUrl)) {
+//            post.setIntroImgUrl(newImageUrl);
+//        }
+//    }
+
 }
