@@ -4,5 +4,6 @@ public interface PostMainIntroProjection {
     String getIntroImgUrl();
     String getTitle();
     int getPrice();
+    String getContent();
     String getCategory();
 }

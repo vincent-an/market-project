@@ -1,9 +1,13 @@
 package likeLion2025.Left.domain.user.entity;
 
 import jakarta.persistence.*;
+import likeLion2025.Left.domain.post.entity.Post;
 import likeLion2025.Left.domain.user.entity.enums.Department;
 import likeLion2025.Left.domain.user.entity.enums.Role;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -32,7 +36,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
+    @ManyToMany
+    @JoinTable(
+            name = "user_liked_posts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private List<Post> likedPosts = new ArrayList<>(); // 찜 게시글
 }
 
 

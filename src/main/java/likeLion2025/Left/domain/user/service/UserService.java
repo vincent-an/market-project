@@ -10,6 +10,7 @@ import likeLion2025.Left.domain.user.dto.MyPostsDTO;
 import likeLion2025.Left.domain.user.dto.request.SignupRequest;
 import likeLion2025.Left.domain.user.dto.UserProfileDTO;
 import likeLion2025.Left.domain.user.dto.request.UserUpdateRequest;
+import likeLion2025.Left.domain.user.dto.response.BookmarkResponse;
 import likeLion2025.Left.domain.user.dto.response.UserResponse;
 import likeLion2025.Left.domain.user.dto.response.UserUpdateResponse;
 import likeLion2025.Left.domain.user.entity.User;
@@ -118,5 +119,36 @@ public class UserService {
         log.info("상태 변경 완료, 새로운 상태: {}", newStatus);
         // 상태 변경 완료 메시지 반환
         return "상태 변경 완료되었습니다. 새로운 상태: " + newStatus;
+    }
+
+    //찜 버튼 동작 기능
+    @Transactional
+    public BookmarkResponse toggleBookmark(Long postId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        if (user.getLikedPosts().contains(post)) {
+            user.getLikedPosts().remove(post);
+            return BookmarkResponse.from(user, postId, "찜 해제 완료");
+        } else {
+            user.getLikedPosts().add(post);
+            return BookmarkResponse.from(user, postId, "찜 추가 완료");
+        }
+    }
+
+    //찜 목록 조회 (내일 테스트 필요)
+    public List<PostMainIntroResponse> getLikedPosts(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        return user.getLikedPosts().stream()
+                .map(post -> PostMainIntroResponse.builder()
+                        .introImgUrl(post.getIntroImgUrl())
+                        .title(post.getTitle())
+                        .price(post.getPrice())
+                        .category(post.getCategory().getValue())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

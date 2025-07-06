@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -106,18 +107,24 @@ public class PostService {
         return PostUpdateResponse.from(post, "게시글을 수정했습니다.");
     }
 
-    //전체 게시글 조회
-    public List<PostMainIntroResponse> selectPosts() {
-        List<PostMainIntroProjection> projections = postRepository.findAllBy();
+    //전체 게시글 조회 + 검색 키워드가 있으면 키워드로 검색
+    public List<PostMainIntroResponse> selectPosts(String keyword) {
+        List<PostMainIntroProjection> projections;
+
+        if(keyword == null || keyword.isBlank()) {
+            projections = postRepository.findAllBy();
+        } else {
+            projections = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword);
+        }
 
         return projections.stream()
-                .map(p -> new PostMainIntroResponse(
-                        p.getIntroImgUrl(),
-                        p.getTitle(),
-                        p.getPrice(),
-                        p.getCategory()
-                ))
-                .collect(Collectors.toList());
+                .map(p -> PostMainIntroResponse.builder()
+                        .introImgUrl(p.getIntroImgUrl())
+                        .title(p.getTitle())
+                        .price(p.getPrice())
+                        .category(p.getCategory())
+                        .build()
+                ).collect(Collectors.toList());
     }
 
     // 세부 게시글 조회
