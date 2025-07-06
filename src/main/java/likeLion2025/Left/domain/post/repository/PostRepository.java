@@ -13,15 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<PostMainIntroProjection> findAllBy();
+    List<PostMainIntroProjection> findAllByOrderByCreatedAtDesc();
     Optional<Post> findById(Long postId);
-    List<Post> findByPostTypeAndStatus(PostType postType, PostStatus postStatus);
-    List<Post> findByCategoryAndStatusIn(Category category, List<PostStatus> statuses);
-    List<Post> findByUserEmailAndPostTypeAndStatusIn(String email, PostType type, List<PostStatus> statuses);
+    List<Post> findByPostTypeAndStatusOrderByCreatedAtDesc(PostType postType, PostStatus postStatus);
+    List<Post> findByCategoryAndStatusInOrderByCreatedAtDesc(Category category, List<PostStatus> statuses);
+    List<Post> findByUserEmailAndPostTypeAndStatusInOrderByCreatedAtDesc(String email, PostType type, List<PostStatus> statuses);
     Optional<Post> findByIdAndUserId(Long postId, Long userId);
-
-    List<PostMainIntroProjection> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String title, String content);
-
-    List<PostMainIntroProjection> findByTitleContainingIgnoreCase(String title);
+    // 검색기능
+    List<PostMainIntroProjection> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrderByCreatedAtDesc(String title, String content);
 
 }

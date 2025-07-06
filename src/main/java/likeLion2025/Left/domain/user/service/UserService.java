@@ -81,7 +81,7 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
 
-        List<Post> posts = postRepository.findByUserEmailAndPostTypeAndStatusIn(email, type, statuses);
+        List<Post> posts = postRepository.findByUserEmailAndPostTypeAndStatusInOrderByCreatedAtDesc(email, type, statuses);
 
         return posts.stream()
                 .map(post -> MyPostsDTO.builder()
