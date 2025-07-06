@@ -112,9 +112,9 @@ public class PostService {
         List<PostMainIntroProjection> projections;
 
         if(keyword == null || keyword.isBlank()) {
-            projections = postRepository.findAllBy();
+            projections = postRepository.findAllByOrderByCreatedAtDesc();
         } else {
-            projections = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword);
+            projections = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrderByCreatedAtDesc(keyword, keyword);
         }
 
         return projections.stream()
@@ -151,7 +151,7 @@ public class PostService {
 
     // PostType 필터링 기능
     public List<PostMainIntroResponse> filterByTypeAndStatus(PostType postType, PostStatus postStatus) {
-        List<Post> posts = postRepository.findByPostTypeAndStatus(postType, postStatus);
+        List<Post> posts = postRepository.findByPostTypeAndStatusOrderByCreatedAtDesc(postType, postStatus);
 
         return posts.stream()
                 .map(post -> PostMainIntroResponse.builder()
@@ -164,7 +164,7 @@ public class PostService {
     }
     // 카테고리와 상태에 맞는 게시글을 조회하는 로직
     public List<PostMainIntroResponse> filterByCategoryAndStatus(Category categoryEnum, List<PostStatus> statuses) {
-        List<Post> posts = postRepository.findByCategoryAndStatusIn(categoryEnum, statuses);
+        List<Post> posts = postRepository.findByCategoryAndStatusInOrderByCreatedAtDesc(categoryEnum, statuses);
 
         return posts.stream()
                 .map(post -> PostMainIntroResponse.builder()
