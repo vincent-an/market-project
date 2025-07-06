@@ -71,6 +71,9 @@ public class UserService {
 
         user.setNickname(request.getNickname());
         user.setDepartment(request.getDepartment());
+
+        userRepository.save(user); //이거 추가해줘
+
         log.info("변경된 닉네임: {}", request.getNickname());
         log.info("변경된 학과: {}", request.getDepartment());
         return UserUpdateResponse.from(user, "정보 수정 완료!");
@@ -115,6 +118,7 @@ public class UserService {
 
         // 상태 변경
         post.setStatus(newStatus);
+
         log.info("상태 변경한 게시글 번호: {}", postId);
         log.info("상태 변경 완료, 새로운 상태: {}", newStatus);
         // 상태 변경 완료 메시지 반환

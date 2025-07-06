@@ -36,8 +36,9 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private String localLocation = "C:\\testimage\\";
-//            "/tmp/uploads/"; //추후 ubuntu 이미지 파일 경로로 변경해야됨
+    @Value("${local.image-location}")
+    private String localLocation;
+    // 우분투 경로 "/home/ubuntu/images/"
 
     // 이미지 추가
     public String imageUpload(MultipartFile file) throws IOException {
