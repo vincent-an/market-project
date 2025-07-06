@@ -1,4 +1,4 @@
-2025.07.06 (feature-all -> develop marge)
+2025.07.06 (feature-all -> develop merge)
   1. jwt access, refresh toeken 기반 회원가입, 로그인, 로그아웃 기능 완료
   2. 이미지 다중 업로드 기능 구현
   3. 이미지 삭제 구현
@@ -11,8 +11,9 @@
   10. 게시글 수정 기능 구현 (이미지 제외)
   11. 찜 버튼 기능, 내가 찜한 리스트 조회 구현
   12. 검색 기능 구현
+  13. 게시글 조회 시 최근 등록순으로 정렬 추가
 
-2025.07.05 (feature-all -> develop marge)
+2025.07.05 (feature-all -> develop merge)
   1. jwt access, refresh toeken 기반 회원가입, 로그인, 로그아웃 기능 완료
   2. 이미지 다중 업로드 기능 구현
   3. 이미지 삭제 구현
@@ -24,13 +25,13 @@
   9. 내가 등록한 상품 페이지 구현
   10. 게시글 수정 기능 구현 (이미지 제외)
 
-2025.07.04 (feature-all -> develop marge)
+2025.07.04 (feature-all -> develop merge)
   1. jwt access, refresh toeken 기반 회원가입, 로그인, 로그아웃 기능 완료
   2. 이미지 다중 업로드 가능
   3. 이미지 포함 게시물 작성 기능 가능
   4. 게시글 전체 조회 가능
 
-2025.07.02 (feature-all -> develop marge)
+2025.07.02 (feature-all -> develop merge)
   1. jwt방식을 이용한 회원가입, 로그인 기능 완료
   2. 게시글 작성 기능 구현(이미지 업로드 제외)
   3. S3 버킷 연결 완료
