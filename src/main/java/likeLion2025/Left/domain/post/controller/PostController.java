@@ -58,8 +58,8 @@ public class PostController {
 
     //게시글 목록 조회
     @GetMapping("/list")
-    public ResponseEntity<List<PostMainIntroResponse>> listPosts(Model model) {
-        List<PostMainIntroResponse> posts = postService.selectPosts();
+    public ResponseEntity<List<PostMainIntroResponse>> listPosts(@RequestParam(required = false) String keyword) {
+        List<PostMainIntroResponse> posts = postService.selectPosts(keyword);
         return ResponseEntity.ok(posts);
     }
 

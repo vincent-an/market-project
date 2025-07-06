@@ -7,6 +7,7 @@ import likeLion2025.Left.domain.user.dto.MyPostsDTO;
 import likeLion2025.Left.domain.user.dto.request.SignupRequest;
 import likeLion2025.Left.domain.user.dto.UserProfileDTO;
 import likeLion2025.Left.domain.user.dto.request.UserUpdateRequest;
+import likeLion2025.Left.domain.user.dto.response.BookmarkResponse;
 import likeLion2025.Left.domain.user.dto.response.UserResponse;
 import likeLion2025.Left.domain.user.dto.response.UserUpdateResponse;
 import likeLion2025.Left.domain.user.entity.User;
@@ -105,4 +106,21 @@ public class UserController {
         return ResponseEntity.ok(message);
     }
 
+    // 찜 버튼 눌렀을 때
+    @PostMapping("/like/{postId}")
+    public ResponseEntity<BookmarkResponse> addBookmark(
+            @PathVariable Long postId,
+            Authentication authentication) {
+        String email = authentication.getName();
+        BookmarkResponse response = userService.toggleBookmark(postId, email);
+        return ResponseEntity.ok(response);
+    }
+
+    //찜 목록 조회
+    @GetMapping("/profile/likedPosts")
+    public ResponseEntity<List<PostMainIntroResponse>> getLikedPosts(Authentication authentication) {
+        String email = authentication.getName();
+        List<PostMainIntroResponse> likedPosts = userService.getLikedPosts(email);
+        return ResponseEntity.ok(likedPosts);
+    }
 }

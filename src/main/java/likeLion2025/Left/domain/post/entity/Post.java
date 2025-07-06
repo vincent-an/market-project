@@ -67,8 +67,6 @@ public class Post {
     @Column(nullable = false)
     private boolean isDirectTrade; //직거래 여부
 
-    private boolean isLiked; //찜
-
     @NotNull(message = "Contact link is required.")
     private String contactLink; //카톡 오픈톡방 링크
 

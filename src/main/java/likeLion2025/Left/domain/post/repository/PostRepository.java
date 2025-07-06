@@ -20,4 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByUserEmailAndPostTypeAndStatusIn(String email, PostType type, List<PostStatus> statuses);
     Optional<Post> findByIdAndUserId(Long postId, Long userId);
 
+    List<PostMainIntroProjection> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String title, String content);
+
+    List<PostMainIntroProjection> findByTitleContainingIgnoreCase(String title);
+
 }
