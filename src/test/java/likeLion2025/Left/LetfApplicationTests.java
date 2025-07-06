@@ -1,4 +1,4 @@
-package likeLion2025.Letf;
+package likeLion2025.Left;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
