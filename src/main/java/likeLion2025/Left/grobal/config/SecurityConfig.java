@@ -57,7 +57,7 @@ public class SecurityConfig {
 
                                 CorsConfiguration configuration =  new CorsConfiguration();
                                 //프론트에서 보낼 3000번 포트 허용
-                                configuration.setAllowedOriginPatterns(List.of("http://127.0.0.1:3000", "http://localhost:3000"));
+                                configuration.setAllowedOriginPatterns(List.of("http://127.0.0.1:3000", "http://localhost:3000", "https://leftlion.netlify.app/"));
                                 //허용할 메서드는 get, post, 등등 다 허용
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 //프론트에서 Credentials 설정을 하면 true로 바꿔줘야 함
@@ -86,9 +86,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/eushop/login", "/eushop/signup", "/eushop/list"
-                        ,"eushop/list/type/**", "/eushop/content/**", "/eushop/list/category/**").permitAll()
+                        ,"/eushop/list/type/**", "/eushop/content/**", "/eushop/list/category/**", "/").permitAll()
 //                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("eushop/reissue").permitAll() //reissue는 전체 접근 가능
+                        .requestMatchers("/eushop/reissue").permitAll() //reissue는 전체 접근 가능
                         .anyRequest().authenticated());
         //LoginFilter 추가
         http
