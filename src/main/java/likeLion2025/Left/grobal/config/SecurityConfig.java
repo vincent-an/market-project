@@ -93,10 +93,12 @@ public class SecurityConfig {
 //                        .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/eushop/reissue").permitAll() //reissue는 전체 접근 가능
                         .anyRequest().authenticated());
-        //LoginFilter 추가
+        //LoginFilter 추가 + 로그인 필터와 jwt 검증 충돌로 인한 변경
         http
-                .addFilterBefore(new JwtFilter(jwtUtil, userRepository), LoginFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(new JwtFilter(jwtUtil, userRepository), LoginFilter.class)
+//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
 
         // 로그아웃 필터 추가 (기존 로그아웃 필터 앞에)
         http
