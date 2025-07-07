@@ -80,6 +80,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         addRefreshEntity(email, refresh, 86400000L);
 
         //응답 설정
+        log.info("✅ access 토큰 생성 완료: {}", access);
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());

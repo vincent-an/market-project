@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,7 +69,9 @@ public class SecurityConfig {
                                 configuration.setMaxAge(7200L);
                                 // 우리 -> 프론트(클라이언트)쪽으로 헤더를 보내줄때 Authorization에 jwt를 넣어 보내줄 것이기 때문에
                                 // Authorization도 허용해줘야한다.
-                                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+//                                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                                // 프론트에서 JS로 응답 헤더를 읽을 수 있도록 추가
+                                configuration.setExposedHeaders(Arrays.asList("Authorization", "access"));
                                 //우리가 만든 configuration을 리턴
                                 return configuration;
                             }
