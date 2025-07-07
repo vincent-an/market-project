@@ -36,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 Objects.equals("/eushop/list", path) ||
                 Objects.equals("/eushop/list/type/**", path) ||
                 Objects.equals("/eushop/content/**", path) ||
+                Objects.equals("/", path) ||
                 Objects.equals("/eushop/list/category/**", path);
     }
 
