@@ -88,6 +88,7 @@ public class UserService {
 
         return posts.stream()
                 .map(post -> MyPostsDTO.builder()
+                        .postId(post.getId())
                         .introImgUrl(post.getIntroImgUrl())
                         .title(post.getTitle())
                         .price(post.getPrice())
@@ -148,6 +149,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         return user.getLikedPosts().stream()
                 .map(post -> PostMainIntroResponse.builder()
+                        .postId(post.getId())
                         .introImgUrl(post.getIntroImgUrl())
                         .title(post.getTitle())
                         .price(post.getPrice())

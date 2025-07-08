@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class MyPostsDTO {
+    private Long postId;
     private String introImgUrl;
     private String title;
     private int price;
