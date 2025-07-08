@@ -3,7 +3,7 @@ package likeLion2025.Left.domain.post.dto;
 import java.time.LocalDateTime;
 
 public interface PostMainIntroProjection {
-    Long getPostId();
+    Long getId();
     String getIntroImgUrl();
     String getTitle();
     int getPrice();
