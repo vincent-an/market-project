@@ -36,8 +36,8 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${local.image-location}")
-    private String localLocation;
+//    @Value("${local.image-location}")
+    private String localLocation = "C:\\testimage\\";
     // 우분투 경로 "/home/ubuntu/images/"
 
     // 이미지 추가

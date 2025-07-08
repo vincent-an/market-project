@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class PostMainIntroResponse {
-    private Long postId;
+    private Long id;
     private String introImgUrl;
     private String title;
     private int price;
