@@ -119,6 +119,7 @@ public class PostService {
 
         return projections.stream()
                 .map(p -> PostMainIntroResponse.builder()
+                        .postId(p.getPostId())
                         .introImgUrl(p.getIntroImgUrl())
                         .title(p.getTitle())
                         .price(p.getPrice())
@@ -155,6 +156,7 @@ public class PostService {
 
         return posts.stream()
                 .map(post -> PostMainIntroResponse.builder()
+                        .postId((post.getId()))
                         .introImgUrl(post.getIntroImgUrl())
                         .title(post.getTitle())
                         .price(post.getPrice())
@@ -168,6 +170,7 @@ public class PostService {
 
         return posts.stream()
                 .map(post -> PostMainIntroResponse.builder()
+                        .postId((post.getId()))
                         .introImgUrl(post.getIntroImgUrl())
                         .title(post.getTitle())
                         .price(post.getPrice())
